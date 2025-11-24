@@ -3,8 +3,8 @@ const { env } = require("./env");
 
 const corsPolicy = cors({
   origin: env.UI_URL,
-  method: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Accept", "Origin", "X-CSRF-TOKEN"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Accept", "Origin", "X-CSRF-TOKEN", "Authorization"],
   credentials: true,
 });
 

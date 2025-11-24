@@ -10,8 +10,7 @@
     "lint:fix": "npm run lint -- --fix",
     "prettier": "prettier . --ext ts,tsx --check",
     "prettier:fix": "npm run prettier -- --write",
-    "format": "npm run prettier:fix && npm run lint:fix",
-    "prepare": "husky && husky install"
+    "format": "npm run prettier:fix && npm run lint:fix"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
