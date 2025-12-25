@@ -8,6 +8,7 @@ A comprehensive full-stack web application for managing school operations includ
 skill-test/
 ├── frontend/           # React + TypeScript + Material-UI
 ├── backend/            # Node.js + Express + PostgreSQL
+├── blockchain/         # Smart contracts + Hardhat + Web3
 ├── go-service/         # Golang microservice for PDF reports
 ├── seed_db/           # Database schema and seed data
 └── README.md          # This file
@@ -35,7 +36,33 @@ npm install
 npm run dev
 ```
 
-### 3. Access the Application
+### 3. Blockchain Setup (For Certificate Verification)
+```bash
+# Terminal 1 - Start local blockchain (keep running)
+cd blockchain
+npm install
+npx hardhat node
+
+# Terminal 2 - Deploy contracts and setup
+cd blockchain
+./scripts/setup-local-blockchain.sh
+
+# Or manually:
+npx hardhat run scripts/deploy.js --network localhost
+TARGET_ADDRESS=0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199 npx hardhat run scripts/grant-issuer-role.js --network localhost
+```
+
+**Configure MetaMask:**
+1. Add Localhost Network:
+   - Network Name: `Localhost 8545`
+   - RPC URL: `http://127.0.0.1:8545`
+   - Chain ID: `31337`
+   - Currency: `ETH`
+2. Import test account using private key from Terminal 1
+
+**Note:** Keep the Hardhat node running. If you restart it, you must redeploy contracts using the setup script.
+
+### 4. Access the Application
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:5007
 - **Demo Credentials**: 
@@ -121,6 +148,18 @@ psql -d school_mgmt -f seed_db/seed-db.sql
 - **Email Service**: Resend API
 - **Validation**: Zod
 
+### Blockchain
+- **Network**: Ethereum (Local: Hardhat, Testnet: Sepolia, Mainnet: Polygon)
+- **Smart Contract Language**: Solidity 0.8.20
+- **Development Framework**: Hardhat
+- **Web3 Library**: Ethers.js v6
+- **Storage**: IPFS (Pinata)
+- **Features**: 
+  - Certificate issuance and verification
+  - Role-based access control (ISSUER_ROLE, ADMIN_ROLE)
+  - Certificate revocation
+  - On-chain immutable records
+
 ### Database
 - **Primary DB**: PostgreSQL
 - **Schema**: Comprehensive school management schema
@@ -200,10 +239,22 @@ backend/src/
 4. Test authentication and authorization
 
 ### For Blockchain Developers
-1. Set up local blockchain environment (Hardhat/Ganache)
-2. Deploy certificate smart contract
-3. Integrate Web3 wallet connection
-4. Test certificate issuance and verification flow
+1. Start Hardhat node: `npx hardhat node`
+2. Deploy contracts: `./scripts/setup-local-blockchain.sh`
+3. Configure MetaMask with local network (Chain ID: 31337)
+4. Navigate to `/app/certificates/issue` in the frontend
+5. Connect Web3 wallet and issue a test certificate
+6. Verify certificate appears in `/app/certificates` with blockchain data
+7. Test certificate verification at `/app/certificates/verify`
+8. Check transaction on local blockchain explorer
+9. Test certificate revocation functionality
+
+**Important Notes:**
+- Keep Hardhat node running during development
+- If you restart the node, redeploy contracts using the setup script
+- Transaction hashes are used as unique identifiers (no duplicate issues on restart)
+- Certificate data is stored both on-chain and in the database
+- IPFS hashes store certificate metadata permanently
 
 ### For Golang Developers
 1. Set up the PostgreSQL database using `seed_db/` files.
@@ -239,6 +290,15 @@ backend/src/
 - `PUT /api/v1/notices/:id` - Update notice
 - `DELETE /api/v1/notices/:id` - Delete notice
 
+### Certificate Management (Blockchain)
+- `GET /api/v1/certificates` - List all certificates
+- `GET /api/v1/certificates/:id` - Get certificate details
+- `POST /api/v1/certificates` - Issue new certificate
+- `POST /api/v1/certificates/:id/revoke` - Revoke certificate
+- `PUT /api/v1/certificates/:id/blockchain` - Update blockchain data
+- `GET /api/v1/certificates/verify/:certificateNumber` - Verify certificate (public)
+- `GET /api/v1/certificates/types` - Get certificate types
+
 ### PDF Generation Service (Go)
 - `GET /api/v1/students/:id/report` - Generate and download a PDF report for a specific student.
 
@@ -258,8 +318,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions and support:
 - Create an issue in the repository
-- Check existing documentation in `/frontend/README.md` and `/backend/README.md`
+- Check existing documentation:
+  - Frontend: `/frontend/README.md`
+  - Backend: `/backend/README.md`
+  - Blockchain: `/blockchain/README.md` (Complete setup guide)
 - Review the database schema in `/seed_db/tables.sql`
+
+### Blockchain-Specific Support
+- **Contract Address (Localhost)**: `0x5FbDB2315678afecb367f032d93F642f64180aa3`
+- **Troubleshooting**: See `/blockchain/README.md` for common issues
+- **Smart Contract**: `/blockchain/contracts/CertificateVerification.sol`
+- **ABI**: `/blockchain/artifacts/contracts/CertificateVerification.sol/CertificateVerification.json`
 
 ---
 

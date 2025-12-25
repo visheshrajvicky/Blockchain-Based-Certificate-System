@@ -1,0 +1,30 @@
+{
+  "name": "school-certificate-blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain-based certificate verification system",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:localhost": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "deploy:polygon": "hardhat run scripts/deploy.js --network polygon",
+    "deploy:mumbai": "hardhat run scripts/deploy.js --network mumbai",
+    "grant-role:localhost": "hardhat run scripts/grant-issuer-role.js --network localhost",
+    "grant-role:sepolia": "hardhat run scripts/grant-issuer-role.js --network sepolia",
+    "grant-role:polygon": "hardhat run scripts/grant-issuer-role.js --network polygon",
+    "grant-role:mumbai": "hardhat run scripts/grant-issuer-role.js --network mumbai",
+    "node": "hardhat node"
+  },
+  "keywords": ["blockchain", "certificates", "verification", "ethereum", "polygon"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.4"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "dotenv": "^16.3.1"
+  }
+}

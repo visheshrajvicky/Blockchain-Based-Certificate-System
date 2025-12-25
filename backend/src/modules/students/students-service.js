@@ -10,6 +10,7 @@ const checkStudentId = async (id) => {
 }
 
 const getAllStudents = async (payload) => {
+    console.log("Service Payload:", payload);
     const students = await findAllStudents(payload);
     if (students.length <= 0) {
         throw new ApiError(404, "Students not found");
@@ -69,10 +70,23 @@ const setStudentStatus = async ({ userId, reviewerId, status }) => {
     return { message: "Student status changed successfully" };
 }
 
+const deleteStudent = async (id) => {
+    await checkStudentId(id);
+    
+    const { deleteStudentById } = require("./students-repository");
+    const affectedRow = await deleteStudentById(id);
+    if (affectedRow <= 0) {
+        throw new ApiError(500, "Unable to delete student");
+    }
+
+    return { message: "Student deleted successfully" };
+}
+
 module.exports = {
     getAllStudents,
     getStudentDetail,
     addNewStudent,
     setStudentStatus,
     updateStudent,
+    deleteStudent,
 };

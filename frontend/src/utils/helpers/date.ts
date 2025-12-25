@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 
 export const DATE_FORMAT = 'MMMM d, yyyy';
 export const DATE_TIME_FORMAT = "MMMM d, yyyy 'at' hh:mm:ss a";
@@ -9,6 +9,7 @@ export const MONTH_DAY_FORMAT = 'MMMM d';
 export const getFormattedDate = (dt: Date | null | string, dtFormat: string): string => {
   if (!dt) return '';
 
-  const formattedDt = format(dt, dtFormat);
+  // Format in UTC timezone to avoid local timezone conversion
+  const formattedDt = formatInTimeZone(dt, 'UTC', dtFormat);
   return formattedDt;
 };

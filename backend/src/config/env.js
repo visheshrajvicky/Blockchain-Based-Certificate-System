@@ -18,6 +18,11 @@ const env = {
   API_URL: process.env.API_URL,
   COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
+  // Blockchain Configuration
+  BLOCKCHAIN_NETWORK: process.env.BLOCKCHAIN_NETWORK,
+  BLOCKCHAIN_RPC_URL: process.env.BLOCKCHAIN_RPC_URL,
+  CERTIFICATE_CONTRACT_ADDRESS: process.env.CERTIFICATE_CONTRACT_ADDRESS,
+  BLOCKCHAIN_PRIVATE_KEY: process.env.BLOCKCHAIN_PRIVATE_KEY,
 };
 
 module.exports = { env };

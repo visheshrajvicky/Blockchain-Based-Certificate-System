@@ -15,8 +15,10 @@ const findAllStudents = async (payload) => {
             t1.name,
             t1.email,
             t1.last_login AS "lastLogin",
-            t1.is_active AS "systemAccess"
+            t1.is_active AS "systemAccess",
+            t2.name AS "role"
         FROM users t1
+        LEFT JOIN roles t2 ON t1.role_id = t2.id
         LEFT JOIN user_profiles t3 ON t1.id = t3.user_id
         WHERE t1.role_id = 3`;
     let queryParams = [];
@@ -111,11 +113,42 @@ const findStudentToUpdate = async (paylaod) => {
     return rows;
 }
 
+const deleteStudentById = async (id) => {
+    // Delete in order: child tables first, then parent table
+    // This handles foreign key constraints properly
+    const queries = [
+        { query: `DELETE FROM user_leaves WHERE user_id = $1`, queryParams: [id] },
+        { query: `DELETE FROM user_leave_policy WHERE user_id = $1`, queryParams: [id] },
+        { query: `DELETE FROM user_refresh_tokens WHERE user_id = $1`, queryParams: [id] },
+        { query: `DELETE FROM class_teachers WHERE teacher_id = $1`, queryParams: [id] },
+        { query: `DELETE FROM notices WHERE author_id = $1`, queryParams: [id] },
+        { query: `DELETE FROM notices WHERE reviewer_id = $1`, queryParams: [id] },
+        { query: `DELETE FROM user_profiles WHERE user_id = $1`, queryParams: [id] },
+        { query: `DELETE FROM users WHERE id = $1 AND role_id = 3`, queryParams: [id] }
+    ];
+
+    let affectedRows = 0;
+    for (const { query, queryParams } of queries) {
+        try {
+            const result = await processDBRequest({ query, queryParams });
+            if (query.includes('DELETE FROM users')) {
+                affectedRows = result.rowCount;
+            }
+        } catch (error) {
+            // Continue even if some deletes fail (e.g., no records to delete)
+            console.error(`Delete error for query: ${query}`, error.message);
+        }
+    }
+    
+    return affectedRows;
+}
+
 module.exports = {
     getRoleId,
     findAllStudents,
     addOrUpdateStudent,
     findStudentDetail,
     findStudentToSetStatus,
-    findStudentToUpdate
+    findStudentToUpdate,
+    deleteStudentById
 };

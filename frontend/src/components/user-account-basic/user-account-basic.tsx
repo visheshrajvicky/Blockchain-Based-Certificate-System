@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Box, ListItemIcon, ListItemText, MenuItem, Paper, Typography } from '@mui/material';
-import { Block, CheckCircle, Edit, Email, Key, LockReset, Visibility } from '@mui/icons-material';
+import { Box, IconButton, ListItemIcon, ListItemText, MenuItem, Paper, Typography } from '@mui/material';
+import { Block, CheckCircle, Delete, Edit, Email, Key, LockReset, Visibility } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
@@ -51,9 +51,24 @@ export const UserAccountBasic = ({ data }: { data: UserAccountBasicDataProps }) 
         accessorKey: 'lastLogin',
         header: 'Last Login',
         Cell: ({ cell }) => <>{getFormattedDate(cell.getValue<string>(), DATE_TIME_24_HR_FORMAT)}</>
+      },
+      {
+        header: 'Delete',
+        Cell: ({ row }) => (
+          <IconButton
+            color='error'
+            onClick={() => onMenuItemClick(
+              userType === 'staff' ? 'DELETE_STAFF' : 'DELETE_STUDENT',
+              row.original.id
+            )}
+          >
+            <Delete />
+          </IconButton>
+        )
       }
+
     ],
-    []
+    [userType]
   );
   const onMenuItemClick = (menuAction: string, userId: number) => {
     const modalTitle = menuItemTexts[menuAction] || '';

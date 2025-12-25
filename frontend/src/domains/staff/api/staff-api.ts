@@ -47,6 +47,13 @@ export const staffApi = api.injectEndpoints({
         body: payload
       }),
       invalidatesTags: (_result, _error, { id }) => [{ type: Tag.STAFFS, id }]
+    }),
+    deleteStaff: builder.mutation<{ message: string }, number>({
+      query: (id) => ({
+        url: `/staffs/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: [Tag.STAFFS]
     })
   })
 });
@@ -58,5 +65,6 @@ export const {
   useGetStaffDetailQuery,
   useHandleStaffStatusMutation,
   useAddStaffMutation,
-  useUpdateStaffMutation
+  useUpdateStaffMutation,
+  useDeleteStaffMutation
 } = staffApi;

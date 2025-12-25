@@ -4,6 +4,7 @@ const findUserById = async (id) => {
     const query = `
         SELECT
             id,
+            name,
             email,
             role_id,
             password,
